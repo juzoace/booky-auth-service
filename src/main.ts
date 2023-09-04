@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import config from './common/config';
-import { Logger } from '@nestjs/common';
+import { Logger, RequestMethod } from '@nestjs/common';
 import { KFK_CLIENTS, ValidationPipe, HttpExceptionFilter, ResponseInterceptor } from './common/utils';
 
 import { AppModule } from './app.module';
@@ -30,26 +30,24 @@ async function bootstrap() {
 
   // enable cors
   app.enableCors({ origin: true });
+
   // bind port to env variable
   port = config.port;
 
    // setup swagger docs
    const swagConfig = new DocumentBuilder()
    .setTitle('Auth Service')
-   .setDescription('API Documentation for BookVault')
+   .setDescription('API Documentation for BookVault Auth Service')
    .setVersion('1.0')
-   // .addServer(config.baseUrl)
-   .addBearerAuth(
-     {
-       type: 'http',
-       scheme: 'bearer',
-       name: 'Authorization',
-       bearerFormat: 'JWT',
-       in: 'header',
-     },
-     'JWT',
-   )
+   .addServer(config.baseUrl)
    .build();
+
+   app.setGlobalPrefix(`api`, {
+    exclude: [
+      { path: '', method: RequestMethod.ALL },
+      { path: 'health', method: RequestMethod.ALL },
+    ],
+  });
  SwaggerModule.setup(
    '/docs',
    app,
