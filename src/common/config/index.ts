@@ -22,8 +22,8 @@ export default {
   },
   kafka: {
     sasl: {
-      // username: process.env.KAFKA_SASL_USERNAME,
-      // password: process.env.KAFKA_SASL_PASSWORD,
+      username: process.env.KAFKA_SASL_USERNAME,
+      password: process.env.KAFKA_SASL_PASSWORD,
     },
     brokers: process.env.KAFKA_BROKERS?.split(','),
   },

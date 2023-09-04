@@ -13,7 +13,7 @@ export default {
     privateKey: process.env.PRIVATE_KEY,
     publicKey: process.env.PUBLIC_KEY,
     expiresIn: Number.parseInt(process.env.JWT_EXPIRES_IN) || 21_600, // time in seconds
-    issuer: process.env.ISSUER || 'crednet/circle', // time in seconds
+    issuer: process.env.ISSUER || '', // time in seconds
   },
   db: {
     url: process.env.DATABASE_URL,

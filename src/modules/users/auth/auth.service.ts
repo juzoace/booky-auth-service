@@ -40,12 +40,17 @@ export class AuthService {
 
             // Send user sign up notification through kafka to notification service
             this.notificationClient.emit(NotificationEvents.CREATE_USER_CREATION, user);
-
+            
+            return user;
         } catch(error) {
             throw new UnprocessableEntityException({
                 message: 'Failed to create user',
               });
         }
+
+    }
+
+    async verifyEmail(data) {
 
     }
 
