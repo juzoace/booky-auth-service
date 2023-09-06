@@ -8,11 +8,15 @@ import { User } from './user.entity';
 export class UserService {
     constructor(private readonly userRepository: UserRepository) {}
 
-    async registerUser(data: CreateUserDto): Promise<Partial<User>> {
+    async registerUser(data: CreateUserDto) {
       return  await this.userRepository.createUser(data)
     }
 
-    async findUser(data: AuthRegisterDto): Promise<Partial<User>> {
+    async findUser(data: AuthRegisterDto): Promise<number> {
       return  await this.userRepository.findUser(data)
+    }
+
+    async verifyUser(data: string) {
+      return await this.userRepository.verifyUser(data)
     }
 }

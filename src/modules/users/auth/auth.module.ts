@@ -7,6 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { ClientsModule, Transport,  ClientProviderOptions } from '@nestjs/microservices';
 import { KFK_CLIENTS, KFK_GROUPS, KFK_NAMES } from 'src/common/utils';
 import config from 'src/common/config';
+
 @Module({
     controllers: [AuthController],
     providers: [AuthService, UserService, UserRepository, PrismaService],
@@ -29,7 +30,7 @@ import config from 'src/common/config';
                 },
               } 
             }
-        ]as ClientProviderOptions[])
+        ] as ClientProviderOptions[])
     ]
 })
 export class AuthModule {}

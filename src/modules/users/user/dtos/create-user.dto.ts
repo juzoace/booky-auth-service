@@ -32,4 +32,8 @@ export class CreateUserDto {
   @ApiProperty({ example: 'Bnjgwbkjbnadkjnklb' })
   @IsNotEmpty()
   hash: string;
+
+  @ApiProperty({ example: 'Bnjgwbkjbnadkjnklb' })
+  @IsNotEmpty()
+  verificationToken: string;
 }

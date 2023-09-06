@@ -9,12 +9,14 @@ export enum KFK_CLIENTS {
 export enum KFK_GROUPS {
   BOOK_GROUP = "BOOK_GROUP",
   ORDER_GROUP = "ORDER_GROUP",
-  NOTIFICATION_GROUP = "NOTIFICATION_GROUP"
+  NOTIFICATION_GROUP = "NOTIFICATION_GROUP",
+  AUTH_GROUP = "AUTH_GROUP"
 }
 
 export enum KFK_NAMES {
   ORDER_SERVICE = "ORDER_SERVICE",
   PAYMENT_SERVICE = "PAYMENT_SERVICE",
+  AUTH_SERVICE = "AUTH_SERVICE",
   NOTIFICATION_SERVICE = "NOTIFICATION_SERVICE"
 }
 
@@ -23,5 +25,5 @@ export enum PaymentEvents {
 }
 
 export enum NotificationEvents {
- CREATE_USER_CREATION = "notification.service.create-user-creation"
+  NOTIFICATION_USER_REGISTRATION = "notification.service.notification-user-registration"
 }

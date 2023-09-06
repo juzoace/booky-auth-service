@@ -3,7 +3,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import config from './common/config';
 import { Logger, RequestMethod } from '@nestjs/common';
-import { KFK_CLIENTS, ValidationPipe, HttpExceptionFilter, ResponseInterceptor } from './common/utils';
+import { KFK_CLIENTS, ValidationPipe, HttpExceptionFilter, ResponseInterceptor, KFK_GROUPS } from './common/utils';
 
 import { AppModule } from './app.module';
 
@@ -15,6 +15,11 @@ async function bootstrap() {
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.KAFKA,
     options: {
+      consumer: {
+        groupId: KFK_GROUPS.AUTH_GROUP,
+        allowAutoTopicCreation: true,
+      },
+      subscribe: { fromBeginning: true },
       client: {
         brokers: config.kafka.brokers,
         clientId: KFK_CLIENTS.AUTH_CLIENT,

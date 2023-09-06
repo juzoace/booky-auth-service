@@ -15,11 +15,11 @@ export class AuthService {
 
     async registerUser(data:AuthRegisterDto) {
         try {
-
+            
             if (await this.userService.findUser(data)) { 
                 throw new UnprocessableEntityException({
                     message: 'The user details are already taken',
-                  });
+                });
             }
 
             const keyLength = 32;
@@ -28,6 +28,7 @@ export class AuthService {
             const encoding = 'hex'; 
     
             const salt = randomBytes(32).toString(encoding);
+            const verificationToken = randomBytes(16).toString(encoding);
             const hash =  pbkdf2Sync(
                 data.password,
                 salt,
@@ -35,13 +36,15 @@ export class AuthService {
                 keyLength,
                 digest,
               ).toString(encoding);
-     
-            const user = await this.userService.registerUser({...data, salt, hash});
+            
+            const notificationData = await this.userService.registerUser({...data, salt, verificationToken, hash});
 
             // Send user sign up notification through kafka to notification service
-            this.notificationClient.emit(NotificationEvents.CREATE_USER_CREATION, user);
+            this.notificationClient.emit(NotificationEvents.NOTIFICATION_USER_REGISTRATION, notificationData);
             
-            return user;
+            return {
+                message: 'Account created successfully, please verify your email to continue',
+            };
         } catch(error) {
             throw new UnprocessableEntityException({
                 message: 'Failed to create user',
@@ -50,8 +53,13 @@ export class AuthService {
 
     }
 
-    async verifyEmail(data) {
-
+    async verifyUser(data: string) {
+        try {
+            return await this.userService.verifyUser(data);
+        } catch(error) {
+            throw new UnprocessableEntityException('Failed to process due to invalid token');
+        
+        }
     }
 
 }

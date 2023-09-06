@@ -1,7 +1,6 @@
 import { AuthData } from 'src/authmanager/lib/strategies/auth.strategy';
 import { GetAuthData } from 'src/authmanager/lib/decorators/get-auth-data.decorator';
 import { JwtAuthGuard } from 'src/authmanager/lib/jwt-guard/jwt-guard.guard';
-// import { ResponseMessage } from '@circle-ng/utils';
 import { Body, Controller, Injectable, Ip, Param, Post, UseGuards } from '@nestjs/common';
 import {
     ApiBearerAuth,
@@ -23,7 +22,7 @@ export class AuthController {
     @ApiOperation({ summary: 'Register a user' })
     @ApiOkResponse({ description: 'Registration success'})
     @ApiUnprocessableEntityResponse({ description: 'Validation error' })
-    register(@Body() body: AuthRegisterDto): Promise<Partial<User>> {
+    register(@Body() body: AuthRegisterDto) {
         return this.authService.registerUser(body);
     }
 
@@ -31,11 +30,10 @@ export class AuthController {
     @ApiOperation({ summary: 'Verify user account' })
     @ApiOkResponse({ description: 'success' })
     @ApiUnprocessableEntityResponse({ description: 'Validation error' })
-    // @ResponseMessage('acccount  verified successfully')
     verifyEmail(
     @Param('token') token: string,
     ) {
-      return this.authService.verifyEmail(token);
+      return this.authService.verifyUser(token);
     }
 
     // Cron job that runs every that runs every 24 hours to delete unverified user accounts
