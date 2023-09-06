@@ -154,23 +154,6 @@ export class UserRepository {
             },
           },
         });
-        console.log(expiredTokens);
-      
-        // for (const token of expiredTokens) {
-        //   // Delete the associated user and the verification token
-        //   await this.prisma.user.delete({
-        //     where: {
-        //       id: token.userId,
-        //     },
-        //   });
-      
-        //   // Delete the verification token
-        //   await this.prisma.verificationToken.delete({
-        //     where: {
-        //       id: token.id,
-        //     },
-        //   });
-        // }
 
         for (const token of expiredTokens) {
             // Delete the verification token first
