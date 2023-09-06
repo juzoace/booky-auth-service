@@ -54,12 +54,11 @@ export class AuthService {
     }
 
     async verifyUser(data: string) {
-        try {
-            return await this.userService.verifyUser(data);
-        } catch(error) {
-            throw new UnprocessableEntityException('Failed to process due to invalid token');
-        
-        }
+        return await this.userService.verifyUser(data);
+    }
+
+    async deleteUnverifiedAccounts() {
+        return this.userService.deleteUnverifiedAccounts()
     }
 
 }

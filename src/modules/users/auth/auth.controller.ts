@@ -1,7 +1,9 @@
+import { Body, Controller, Injectable, Ip, Param, Post, UseGuards } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { AuthData } from 'src/authmanager/lib/strategies/auth.strategy';
 import { GetAuthData } from 'src/authmanager/lib/decorators/get-auth-data.decorator';
 import { JwtAuthGuard } from 'src/authmanager/lib/jwt-guard/jwt-guard.guard';
-import { Body, Controller, Injectable, Ip, Param, Post, UseGuards } from '@nestjs/common';
+
 import {
     ApiBearerAuth,
     ApiHeaders,
@@ -36,5 +38,11 @@ export class AuthController {
       return this.authService.verifyUser(token);
     }
 
-    // Cron job that runs every that runs every 24 hours to delete unverified user accounts
+    // Cron job that runs every that runs every 6 hours to delete unverified user accounts
+    @Cron('0 */6 * * *', {
+        timeZone: 'Africa/Lagos'
+    })
+    handleCron() {
+        return this.authService.deleteUnverifiedAccounts();
+    }
 }

@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 import { KFK_CLIENTS, KFK_GROUPS, KFK_NAMES } from './common/utils';
 import config from './common/config';
 
@@ -25,6 +26,7 @@ import config from './common/config';
         },
       },
     ]),
+    ScheduleModule.forRoot()
   ],
   controllers: [AppController],
   providers: [AppService],

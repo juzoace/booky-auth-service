@@ -19,4 +19,8 @@ export class UserService {
     async verifyUser(data: string) {
       return await this.userRepository.verifyUser(data)
     }
+
+    async deleteUnverifiedAccounts() {
+      return await this.userRepository.deleteUnverifiedAccounts()
+    }
 }

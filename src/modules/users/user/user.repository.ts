@@ -102,7 +102,7 @@ export class UserRepository {
           if (verificationToken === null) {
             throw new NotFoundException('Verification token not found');
           }
-      
+       
           // 2. Check if the token has expired
           const currentDateTime = new Date();
           if (verificationToken.expires_at <= currentDateTime) {
@@ -145,5 +145,47 @@ export class UserRepository {
           throw error;
         }
     }
+
+    async deleteUnverifiedAccounts() {
+        const expiredTokens = await this.prisma.verificationToken.findMany({
+          where: {
+            expires_at: {
+              lt: new Date(), // Find tokens where expires_at is in the past
+            },
+          },
+        });
+        console.log(expiredTokens);
       
+        // for (const token of expiredTokens) {
+        //   // Delete the associated user and the verification token
+        //   await this.prisma.user.delete({
+        //     where: {
+        //       id: token.userId,
+        //     },
+        //   });
+      
+        //   // Delete the verification token
+        //   await this.prisma.verificationToken.delete({
+        //     where: {
+        //       id: token.id,
+        //     },
+        //   });
+        // }
+
+        for (const token of expiredTokens) {
+            // Delete the verification token first
+            await this.prisma.verificationToken.delete({
+              where: {
+                id: token.id,
+              },
+            });
+        
+            // Then delete the associated user
+            await this.prisma.user.delete({
+              where: {
+                id: token.userId,
+              },
+            });
+          }
+    }
 }
