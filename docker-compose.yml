@@ -1,0 +1,79 @@
+version: '3'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    networks:
+      - booky
+    environment:
+      ZOOKEEPER_CLIENT_PORT: ${FORWARD_ZOOKEEPER_PORT:-2181}
+      ZOOKEEPER_TICK_TIME: 2000
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    networks:
+      - booky
+    depends_on:
+      - zookeeper
+    ports:
+      - ${FORWARD_KAFKA_PORT:-9092}:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:${FORWARD_ZOOKEEPER_PORT:-2181}
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:2${FORWARD_KAFKA_PORT:-9092},PLAINTEXT_HOST://localhost:${FORWARD_KAFKA_PORT:-9092}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKAJS_NO_PARTITIONER_WARNING: 1
+  kafdrop:
+    image: obsidiandynamics/kafdrop:latest
+    networks:
+      - booky
+    depends_on:
+      - kafka
+    ports:
+      - 19000:9000
+    environment:
+      KAFKA_BROKERCONNECT: kafka:2${FORWARD_KAFKA_PORT:-9092}
+
+  redis-booky:
+    image: 'redis:alpine'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - '${FORWARD_REDIS_PORT:-6379}:6379'
+    volumes:
+      - 'booky-redis:/data'
+    networks:
+      - booky
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      retries: 3
+      timeout: 5s
+
+  booky-mysql:
+    image: 'mysql/mysql-server:8.0'
+    ports:
+      - '${FORWARD_DB_PORT:-3306}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    volumes:
+      - 'booky-mysql:/var/lib/mysql'
+    networks:
+      - booky
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-p${DB_PASSWORD}']
+      retries: 3
+      timeout: 5s
+networks:
+  booky:
+    driver: bridge
+
+volumes:
+  booky-mysql:
+    driver: local
+  booky-redis:
+    driver: local
